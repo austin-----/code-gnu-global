@@ -7,7 +7,7 @@
     "vscode": "^0.10.1"
   },
   "categories": [
-    "Other"
+    "Other", "Languages"
   ],
   "activationEvents": [
     "onLanguage:cpp",

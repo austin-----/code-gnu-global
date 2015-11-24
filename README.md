@@ -1,4 +1,7 @@
 # README
+
+[Github Repo](https://github.com/austin-----/code-gnu-global)
+
 ## Functionality
 Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual Studio Code.
 
@@ -28,5 +31,6 @@ Since GNU Global is a tagging system, it does not do any AST parsing to understa
 
 ### For more information
 * [GNU Global](https://www.gnu.org/software/global/)
+* [Repo](https://github.com/austin-----/code-gnu-global)
 
 ** Enjoy!**
