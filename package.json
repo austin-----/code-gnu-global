@@ -1,7 +1,9 @@
 {
   "name": "code-gnu-global",
-  "description": "C/C++ Intellisense with gnu global tags",
-  "version": "0.0.2",
+  "displayName": "C++ Intellisense",
+  "description": "C/C++ Intellisense with the help of GNU Global tags",
+  "icon": "logo.svg",
+  "version": "0.0.5",
   "publisher": "austin",
   "engines": {
     "vscode": "^0.10.1"
