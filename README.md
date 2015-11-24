@@ -1,6 +1,6 @@
 # README
 ## Functionality
-Provide Intellisense for C/C++ with the help of the GNU Global tool.
+Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual Studio Code.
 
 ## Usage
 Make sure you have GNU Global tool installed and added to PATH. 
@@ -10,6 +10,9 @@ In the workspace folder of your C/C++ project, run 'gtags'. This will generate t
 Then you can enjoy Intellisense for this project in VS Code:
 
 * Auto completion
+
+
+
 * Go to definition
 * Find references
 * List symbols
