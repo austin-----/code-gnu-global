@@ -1,6 +1,6 @@
 # README
 
-C++ Intellisense at [Github Repo](https://github.com/austin-----/code-gnu-global)
+C++ Intellisense ([Github Repo](https://github.com/austin-----/code-gnu-global))
 
 ## Functionality
 Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual Studio Code.
