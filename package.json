@@ -2,7 +2,7 @@
   "name": "code-gnu-global",
   "description": "C/C++ Intellisense with gnu global tags",
   "version": "0.0.1",
-  "publisher": "Austin",
+  "publisher": "austin",
   "engines": {
     "vscode": "^0.10.1"
   },
