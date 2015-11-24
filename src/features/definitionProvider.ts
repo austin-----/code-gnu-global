@@ -9,7 +9,7 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 		return this._global.run(['--encode-path', '" "', '-xa', word])
 		.then(function(output){
 			console.log(output);
-			var currentFile = document.fileName;
+			var currentFile = document.fileName.replace('\\', '/'); // On Windows, global uses '/' while code uses '\' as the separtor
 			console.log(currentFile);
 			var filePath = "";
 			var line = 0;
