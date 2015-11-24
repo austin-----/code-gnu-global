@@ -5,7 +5,7 @@ export default class GlobalCompletionItemProvider extends AbstractProvider imple
 	provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) : Promise<vscode.CompletionItem[]> {
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
-		return this._global.run(["-c", word])
+		return this._global.run(['-c', word])
 		.then(function(output){
 			console.log(output);
 			var bucket = new Array<vscode.CompletionItem>();

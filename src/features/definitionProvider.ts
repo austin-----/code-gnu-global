@@ -6,7 +6,7 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		var self = this;
-		return this._global.run(["--encode-path", "' '", "-xa", word])
+		return this._global.run(['--encode-path', '" "', '-xa', word])
 		.then(function(output){
 			console.log(output);
 			var currentFile = document.fileName;
