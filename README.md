@@ -1,13 +1,23 @@
 # README
-## This is the README for your extension "code-gnu-global" 
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+## Functionality
+Provide Intellisense for C/C++ with the help of the GNU Global tool.
 
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
+## Usage
+Make sure you have GNU Global tool installed and added to PATH. 
+
+In the workspace folder of your C/C++ project, run 'gtags'. This will generate the GTAGS, GRTAGS, and GPATH files.
+
+Then you can enjoy Intellisense for this project in VS Code:
+
+* Auto completion
+* Go to definition
+* Find references
+* List symbols
+
+## Limitations
+Since GNU Global is a tagging system, it does not do any AST parsing to understand class members and etc. 
 
 ### For more information
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+* [GNU Global](https://www.gnu.org/software/global/)
 
 ** Enjoy!**
