@@ -11,11 +11,17 @@ Then you can enjoy Intellisense for this project in VS Code:
 
 * Auto completion
 
-
+![Auto Completion](screenshots/auto_completion.png)
 
 * Go to definition
+
 * Find references
+
+![Find References](screenshots/find_ref.png)
+
 * List symbols
+
+![List Symbols](screenshots/list_symbols.png)
 
 ## Limitations
 Since GNU Global is a tagging system, it does not do any AST parsing to understand class members and etc. 
