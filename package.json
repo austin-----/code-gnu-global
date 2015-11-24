@@ -25,5 +25,9 @@
   },
   "dependencies": {
     "child-process-promise": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/austin-----/code-gnu-global"
   }
 }
