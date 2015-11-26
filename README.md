@@ -39,4 +39,4 @@ Since GNU Global is a tagging system, it does not do any AST parsing to understa
 * [Repo](https://github.com/austin-----/code-gnu-global)
 * [VS Code Marketplace](https://marketplace.visualstudio.com/items/austin.code-gnu-global)
 
-** Enjoy! **
+**Enjoy!**
