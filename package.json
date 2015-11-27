@@ -3,7 +3,7 @@
   "displayName": "C++ Intellisense",
   "description": "C/C++ Intellisense with the help of GNU Global tags",
   "icon": "logo.svg",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "austin",
   "engines": {
     "vscode": "^0.10.1"
