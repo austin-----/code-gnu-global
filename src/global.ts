@@ -26,10 +26,10 @@ export class Global {
 			if (content == null || content == "") return null;
 
 			var values = content.split(/ +/);
-			var tag = values[0];
-			var line = parseInt(values[1]) - 1;
-			var path = values[2].replace("%20", " ");
-			var info = values[3];
+			var tag = values.shift();
+			var line = parseInt(values.shift()) - 1;
+			var path = values.shift().replace("%20", " ");
+			var info = values.join(' ');
 
 			return { "tag": tag, "line": line, "path": path, "info": info };
 		} catch (ex) {

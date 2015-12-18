@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import AbstractProvider from './abstractProvider';
 
 export default class GlobalCompletionItemProvider extends AbstractProvider implements vscode.CompletionItemProvider {
-	provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) : Promise<vscode.CompletionItem[]> {
+	provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) : Thenable<vscode.CompletionItem[]> {
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		return this._global.run(['-c', word])

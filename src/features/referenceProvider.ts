@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import AbstractProvider from './abstractProvider';
 
 export default class GlobalReferenceProvider extends AbstractProvider implements vscode.ReferenceProvider {
-	public provideReferences(document: vscode.TextDocument, position: vscode.Position, options: { includeDeclaration: boolean;}, token: vscode.CancellationToken): Promise<vscode.Location[]> {
+	public provideReferences(document: vscode.TextDocument, position: vscode.Position, options: { includeDeclaration: boolean;}, token: vscode.CancellationToken): Thenable<vscode.Location[]> {
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		var self = this;

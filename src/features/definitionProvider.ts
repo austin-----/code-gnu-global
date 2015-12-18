@@ -2,40 +2,41 @@ import * as vscode from 'vscode';
 import AbstractProvider from './abstractProvider';
 
 export default class GlobalDefinitionProvider extends AbstractProvider implements vscode.DefinitionProvider {
-	public provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Location> {
+	public provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Location> {
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		var self = this;
 		return this._global.run(['--encode-path', '" "', '-xa', word])
 		.then(function(output){
 			console.log(output);
-			var currentFile = document.fileName.replace('\\', '/'); // On Windows, global uses '/' while code uses '\' as the separtor
-			console.log(currentFile);
-			var filePath = "";
-			var line = 0;
-			var found = false;
+
 			try {
+				var bucket = new Array<any>();
 				output.toString().split(/\r?\n/)
 				.forEach(function(value, index, array){
 					var result = self._global.parseLine(value);
 					if (result == null)return;
 					
+					result.label = result.path;
+					result.description = result.info;
 					console.log(result.path);
-					if (!found || result.path == currentFile) {
-						filePath = result.path;
-						line = result.line;
-						found = true;
-					}
+					bucket.push(result);
+				});
+				
+				if (bucket.length == 1) {
+					return new vscode.Location(vscode.Uri.file(bucket[0].path), new vscode.Position(bucket[0].line, 0));
+				} else if (bucket.length == 0) {
+					return null;
+				}
+				return vscode.window.showQuickPick(bucket).then(value => {
+					return new vscode.Location(vscode.Uri.file(value.path), new vscode.Position(value.line, 0));
 				});
 			}
 			catch (ex){
 				console.error("Error: " + ex);
 			}
-			if (found) {
-				return new vscode.Location(vscode.Uri.file(filePath), new vscode.Position(line, 0));
-			} else {
-				return null;
-			}
+			
+			return null;
 		});
 	}
 }
