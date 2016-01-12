@@ -3,18 +3,30 @@
   "displayName": "C++ Intellisense",
   "description": "C/C++ Intellisense with the help of GNU Global tags",
   "icon": "logo.svg",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publisher": "austin",
   "engines": {
     "vscode": "^0.10.1"
   },
   "categories": [
-    "Other", "Languages"
+    "Other",
+    "Languages"
   ],
   "activationEvents": [
     "onLanguage:cpp",
     "onLanguage:c"
   ],
+  "configuration": {
+    "type": "object",
+    "title": "C++ Intellisense configuration",
+    "properties": {
+      "codegnuglobal.encoding": {
+        "type": "string",
+        "default": "",
+        "description": "Specify the encoding of the command line output. (Normally it is the code page of Windows non-unicode program if it is not CP437)"
+      }
+    }
+  },
   "main": "./out/src/extension",
   "contributes": {},
   "scripts": {
@@ -26,7 +38,8 @@
     "vscode": "0.10.x"
   },
   "dependencies": {
-    "child-process-promise": "^1.1.0"
+    "child-process-promise": "^1.1.0",
+    "iconv-lite": "^0.4.13"
   },
   "repository": {
     "type": "git",
