@@ -13,19 +13,7 @@ export default class GlobalDocumentSymbolProvider extends AbstractProvider imple
 				.forEach(function(value, index, array){
 					var result = self._global.parseLine(value);
 					if (result == null)return;
-					var kind = vscode.SymbolKind.Function;
-					switch (result.info) {
-						case 'class':
-							kind = vscode.SymbolKind.Class;
-							break;
-						case 'struct':
-							kind = vscode.SymbolKind.Class;
-							break;
-						case 'enum':
-							kind = vscode.SymbolKind.Enum;
-							break;
-					}
-					bucket.push(new vscode.SymbolInformation(result.tag, kind, new vscode.Range(new vscode.Position(result.line, 0), new vscode.Position(result.line, 0))));
+					bucket.push(new vscode.SymbolInformation(result.tag, result.kind, new vscode.Range(new vscode.Position(result.line, 0), new vscode.Position(result.line, 0))));
 				});
 			}
 			catch (ex){
