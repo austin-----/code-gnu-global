@@ -10,7 +10,7 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
 ## Usage
 1. Make sure you have the latest GNU Global (>= 6.5) tool installed and added to PATH.
    
-   Please note that Debian and it's derivates (Ubuntu, Mint, ...) are shipping an outdated version of GNU global (v5.7), which is throwing the error "--encode-path unrecognized". (Thanks @badaix for the tip)
+   Please note that Debian and its derivates (Ubuntu, Mint, ...) are shipping an outdated version of GNU global (v5.7), which is throwing the error "--encode-path unrecognized". (Thanks @badaix for the tip)
 
 2. In the workspace folder of your C/C++ project, run 'gtags'. This will generate the GTAGS, GRTAGS, and GPATH files. If you made changes to your code, run 'gtags' again to renew the tag files.
 
