@@ -12,7 +12,7 @@ function execute(command: string): Promise<Buffer> {
     return exec(command, {
         cwd: vscode.workspace.rootPath,
         encoding: output,
-        maxBuffer: 1024*1024
+        maxBuffer: 10*1024*1024
     }).then(function(result): Buffer {
         if (encoding != null && encoding != "") {
             var decoded = iconv.decode(result.stdout, encoding);
