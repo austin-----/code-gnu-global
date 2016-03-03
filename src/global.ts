@@ -11,7 +11,8 @@ function execute(command: string): Promise<Buffer> {
     }
     return exec(command, {
         cwd: vscode.workspace.rootPath,
-        encoding: output
+        encoding: output,
+        maxBuffer: 10*1024*1024
     }).then(function(result): Buffer {
         if (encoding != null && encoding != "") {
             var decoded = iconv.decode(result.stdout, encoding);
@@ -30,6 +31,10 @@ export class Global {
 
     run(params: string[]): Promise<Buffer> {
         return execute(this.exec + ' ' + params.join(' '));
+    }
+
+    updateTags() {
+        this.run(['-u']);
     }
 
     parseLine(content: string): any {
