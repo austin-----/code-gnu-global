@@ -28,9 +28,12 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 				} else if (bucket.length == 0) {
 					return null;
 				}
-				return vscode.window.showQuickPick(bucket).then(value => {
-					return new vscode.Location(vscode.Uri.file(value.path), new vscode.Position(value.line, 0));
+				
+				var matches = new Array<vscode.Location>();
+				bucket.forEach((value, index, array) => {
+					matches.push(new vscode.Location(vscode.Uri.file(value.path), new vscode.Position(value.line, 0)));
 				});
+				return matches;
 			}
 			catch (ex){
 				console.error("Error: " + ex);
