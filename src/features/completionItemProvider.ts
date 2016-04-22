@@ -24,15 +24,17 @@ export default class GlobalCompletionItemProvider extends AbstractProvider imple
 		.then(function(output){
 			console.log(output);
 			var bucket = new Array<vscode.CompletionItem>();
-            output.toString().split(/\r?\n/)
-			.forEach(function(value, index, array){
-                var result = self._global.parseLine(value);
-			    if (result == null)return;
-                var item = new vscode.CompletionItem(result.tag);
-				item.detail = result.info;
-                item.kind = toCompletionItemKind(result.kind);
-				bucket.push(item);
+            if (output != null) {
+                output.toString().split(/\r?\n/)
+			    .forEach(function(value, index, array){
+                    var result = self._global.parseLine(value);
+                    if (result == null)return;
+                    var item = new vscode.CompletionItem(result.tag);
+                    item.detail = result.info;
+                    item.kind = toCompletionItemKind(result.kind);
+                    bucket.push(item);
 			});
+            }
 			return bucket;
 		});
 	}
