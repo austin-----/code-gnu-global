@@ -11,13 +11,15 @@ export default class GlobalReferenceProvider extends AbstractProvider implements
 				console.log(output);
 				var bucket = new Array<vscode.Location>();
 				try {
-					output.toString().split(/\r?\n/)
+					if (output != null) {
+						output.toString().split(/\r?\n/)
 						.forEach(function(value, index, array) {
 							var result = self._global.parseLine(value);
 							if (result == null) return;
 
 							bucket.push(new vscode.Location(vscode.Uri.file(result.path), new vscode.Range(new vscode.Position(result.line, 0), new vscode.Position(result.line, 0))));
 						});
+					}
 				}
 				catch (ex) {
 					console.error("Error: " + ex);

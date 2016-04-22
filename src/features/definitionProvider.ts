@@ -12,16 +12,18 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 
 			try {
 				var bucket = new Array<any>();
-				output.toString().split(/\r?\n/)
-				.forEach(function(value, index, array){
-					var result = self._global.parseLine(value);
-					if (result == null)return;
-					
-					result.label = result.path;
-					result.description = result.info;
-					console.log(result.path);
-					bucket.push(result);
-				});
+				if (output != null) {
+					output.toString().split(/\r?\n/)
+					.forEach(function(value, index, array){
+						var result = self._global.parseLine(value);
+						if (result == null)return;
+						
+						result.label = result.path;
+						result.description = result.info;
+						console.log(result.path);
+						bucket.push(result);
+					});
+				}
 				
 				if (bucket.length == 1) {
 					return new vscode.Location(vscode.Uri.file(bucket[0].path), new vscode.Position(bucket[0].line, 0));

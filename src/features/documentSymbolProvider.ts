@@ -9,12 +9,14 @@ export default class GlobalDocumentSymbolProvider extends AbstractProvider imple
 			console.log(output);
 			var bucket: vscode.SymbolInformation[] = new Array<vscode.SymbolInformation>();
 			try {
-				output.toString().split(/\r?\n/)
-				.forEach(function(value, index, array){
-					var result = self._global.parseLine(value);
-					if (result == null)return;
-					bucket.push(new vscode.SymbolInformation(result.tag, result.kind, new vscode.Range(new vscode.Position(result.line, 0), new vscode.Position(result.line, 0))));
-				});
+				if (output != null) {
+					output.toString().split(/\r?\n/)
+					.forEach(function(value, index, array){
+						var result = self._global.parseLine(value);
+						if (result == null)return;
+						bucket.push(new vscode.SymbolInformation(result.tag, result.kind, new vscode.Range(new vscode.Position(result.line, 0), new vscode.Position(result.line, 0))));
+					});
+				}
 			}
 			catch (ex){
 				console.error("Error: " + ex);

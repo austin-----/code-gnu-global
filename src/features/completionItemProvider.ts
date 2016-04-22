@@ -33,7 +33,7 @@ export default class GlobalCompletionItemProvider extends AbstractProvider imple
                     item.detail = result.info;
                     item.kind = toCompletionItemKind(result.kind);
                     bucket.push(item);
-			});
+			    });
             }
 			return bucket;
 		});
