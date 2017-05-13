@@ -3,7 +3,7 @@
   "displayName": "C++ Intellisense",
   "description": "C/C++ Intellisense with the help of GNU Global tags",
   "icon": "logo.svg",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "austin",
   "engines": {
     "vscode": "^0.10.1"
@@ -24,6 +24,16 @@
         "type": "string",
         "default": "",
         "description": "Specify the encoding of the command line output. (Normally it is the code page of Windows non-unicode program if it is not CP437)"
+      },
+      "codegnuglobal.executable": {
+        "type": "string",
+        "default": "global",
+        "description": "Specify the path to the global executable. (If it is not in PATH already)"
+      },
+      "codegnuglobal.autoupdate": {
+        "type": "boolean",
+        "default": true,
+        "description": "Specify if global should automatically update the tags on file save. (You should turn it off in the workspace settings for large projects)"
       }
     }
   },

@@ -34,7 +34,11 @@ export class Global {
     }
 
     updateTags() {
-        this.run(['-u']);
+        var configuration = vscode.workspace.getConfiguration('codegnuglobal');
+        var shouldupdate = configuration.get<boolean>('autoupdate', true);
+        if (shouldupdate) {
+            this.run(['-u']);
+        }
     }
 
     parseLine(content: string): any {

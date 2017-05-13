@@ -21,6 +21,8 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
 
 2. In the workspace folder of your C/C++ project, run 'gtags'. This will generate the GTAGS, GRTAGS, and GPATH files. If you made changes to your code, run 'gtags' again to renew the tag files.
 
+   Upon saving your source code, the extension would try to automatically update the tags by running 'global -u'. You can turn this off by setting `codegnuglobal.autoupdate` to false in your settings.js (Preference - User Settings).
+
 3. Install 'C++ Intellisense' in VS Code and then you can enjoy Intellisense for this project in VS Code.
 
 4. If you are using Windows with a non-CP437 code page, or Linux/OSX with non-UTF8 encoding, please add 'codegnuglobal.encoding' to your settings.js (Preference - User Settings) and set its value to the custom encoding you are using (Please look at [https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings) for supported encodings).
