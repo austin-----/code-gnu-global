@@ -15,7 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "code-gnu-global" is now active!'); 
 
-    const global = new Global("global");
+    var configuration = vscode.workspace.getConfiguration('codegnuglobal');
+    var executable = configuration.get<string>('executable', 'global');
+    const global = new Global(executable);
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['cpp', 'c'], new CompletionItemProvider(global), '.', '>'));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(['cpp', 'c'], new DefinitionProvider(global)));
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(['cpp', 'c'], new DocumentSymbolProvider(global)));

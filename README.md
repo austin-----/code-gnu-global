@@ -8,7 +8,14 @@ Please go to [https://github.com/austin-----/code-gnu-global](https://github.com
 Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual Studio Code.
 
 ## Usage
-1. Make sure you have the latest GNU Global (>= 6.5) tool installed and added to PATH.
+1. Make sure you have the latest GNU Global (>= 6.5) tool installed and added to PATH. If you do not have GNU Global available in PATH, then please add `codegnuglobal.executable` to your settings.js (Preference - User Settings) and set its value to the absolute path and binary of `global` or `global.exe`.
+   
+   E.g.: (GNU Global on Windows, inside a MSYS2 installation)
+   ```
+   {
+       'codegnuglobal.executable': "C:\\msys64\\usr\\bin\\global.exe"
+   }
+   ```
    
    Please note that Debian and its derivates (Ubuntu, Mint, ...) are shipping an outdated version of GNU global (v5.7), which is throwing the error "--encode-path unrecognized". (Thanks @badaix for the tip)
 
