@@ -11,9 +11,9 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
 1. Make sure you have the latest GNU Global (>= 6.5) tool installed and added to PATH. If you do not have GNU Global available in PATH, then please add `codegnuglobal.executable` to your settings.js (Preference - User Settings) and set its value to the absolute path and binary of `global` or `global.exe`.
    
    E.g.: (GNU Global on Windows, inside a MSYS2 installation)
-   ```
+   ```JSON
    {
-       'codegnuglobal.executable': "C:\\msys64\\usr\\bin\\global.exe"
+       "codegnuglobal.executable": "C:\\msys64\\usr\\bin\\global.exe"
    }
    ```
    
@@ -25,12 +25,12 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
 
 3. Install 'C++ Intellisense' in VS Code and then you can enjoy Intellisense for this project in VS Code.
 
-4. If you are using Windows with a non-CP437 code page, or Linux/OSX with non-UTF8 encoding, please add 'codegnuglobal.encoding' to your settings.js (Preference - User Settings) and set its value to the custom encoding you are using (Please look at [https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings) for supported encodings).
+4. If you are using Windows with a non-CP437 code page, or Linux/OSX with non-UTF8 encoding, please add 'codegnuglobal.encoding' to your settings.json (Preference - User Settings) and set its value to the custom encoding you are using (Please look at [https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings) for supported encodings).
    
    E.g.: (CP936 for Simplified Chinese on Windows)
-   ```
+   ```JSON
    {
-       'codegnuglobal.encoding': 'cp936'
+       "codegnuglobal.encoding": 'cp936'
    }
    ```
 
