@@ -29,6 +29,9 @@ function execute(command: string): Promise<Buffer> {
 export class Global {
     exec: string;
 
+    updateInProgress: boolean;
+    queueUpdate: boolean;
+
     run(params: string[]): Promise<Buffer> {
         return execute(this.exec + ' ' + params.join(' '));
     }
@@ -37,7 +40,28 @@ export class Global {
         var configuration = vscode.workspace.getConfiguration('codegnuglobal');
         var shouldupdate = configuration.get<boolean>('autoupdate', true);
         if (shouldupdate) {
-            this.run(['-u']);
+            if (this.updateInProgress)
+            {
+                this.queueUpdate = true;
+            }
+            else
+            {
+                this.updateInProgress = true;
+                var self = this;
+                this.run(['-u']).then(() => {
+                    self.updateTagsFinish();
+                }).catch(() => {
+                    self.updateTagsFinish();
+                });
+            }
+        }
+    }
+
+    updateTagsFinish() {
+        this.updateInProgress = false;
+        if (this.queueUpdate) {
+                this.queueUpdate = false;
+                this.updateTags();
         }
     }
 
