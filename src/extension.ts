@@ -26,10 +26,26 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }
     const global = new Global(executable, cygbase);
-    const filter = [ { scheme: 'file', language: 'c' }, { scheme: 'file', language: 'cpp' } ];
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(filter, new CompletionItemProvider(global), '.', '>'));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(filter, new DefinitionProvider(global)));
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(filter, new DocumentSymbolProvider(global)));
-    context.subscriptions.push(vscode.languages.registerReferenceProvider(filter, new ReferenceProvider(global)));
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(d => global.updateTags()));
+
+    function registerLanguages(language: string[], isCpp = false) {
+        if (!isCpp) {
+            const hasCpp = language.indexOf('cpp')
+            if (hasCpp >= 0) {
+                language.splice(hasCpp);
+                registerLanguages(['cpp'], true);
+            }
+        }
+        const filter = language.map((language) => { return { scheme: 'file', language }})
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(filter, new CompletionItemProvider(global, isCpp), '.', '>'));
+        context.subscriptions.push(vscode.languages.registerDefinitionProvider(filter, new DefinitionProvider(global, isCpp)));
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(filter, new DocumentSymbolProvider(global, isCpp)));
+        context.subscriptions.push(vscode.languages.registerReferenceProvider(filter, new ReferenceProvider(global, isCpp)));
+        return;
+    }
+
+    // Global supports more than this, but let's be chill for now: 'c,yacc,asm,java,cpp,php'
+    // In the future we can make a new config option and do [...new Set(configuration.get('langs').split(','))]
+    registerLanguages(['c', 'cpp']);
+
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(d => global.updateTags(d.languageId === 'cpp')));
 }

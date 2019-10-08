@@ -8,7 +8,7 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		var self = this;
 		try {
-			const output = await this._global.run(['--encode-path', ' ', '-xa', word]);
+			const output = await this._global.run(['--encode-path', ' ', '-xa', word], this._options);
 			console.log(output);
 			try {
 				var bucket = new Array<GlobalLine>();

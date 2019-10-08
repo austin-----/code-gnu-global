@@ -1,4 +1,4 @@
-import { ExecFileOptionsWithOtherEncoding, ChildProcess, execFileSync, ExecException } from 'child_process';
+import { ExecFileOptionsWithOtherEncoding, ChildProcess, execFileSync, ExecException, ExecFileOptions } from 'child_process';
 var execFile = require("child-process-promise").execFile as ((
     command: string,
     args: ReadonlyArray<string> | null | undefined,
@@ -27,7 +27,7 @@ interface ChildProcessPromise<T> extends Promise<T> {
 function execute(
     command: string,
     args: string[],
-    options?: ExecFileOptionsWithOtherEncoding
+    options?: ExecFileOptions
 ): Promise<string | Buffer> {
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var encoding = configuration.get<string>('encoding');
@@ -69,27 +69,30 @@ export class Global {
     cygdriveexp?: RegExp;
 
     updateInProgress?: boolean;
-    queueUpdate?: boolean;
+    queueUpdate?: [boolean, boolean];
 
-    run(params: string[]): Promise<string | Buffer> {
+    run(params: string[], options?: ExecFileOptions): Promise<string | Buffer> {
         // FIXME: On Win32 Cygwin/MSYS, uv's escape is not entirely correct
         // as they use a cmdline parsing (build_argv) different from MS CRT
-        return execute(this.exec, params);
+        return execute(this.exec, params, options);
     }
 
-    updateTags() {
+    updateTags(isCpp: boolean) {
         var configuration = vscode.workspace.getConfiguration('codegnuglobal');
         var shouldupdate = configuration.get<boolean>('autoupdate', true);
         if (shouldupdate) {
             if (this.updateInProgress)
             {
-                this.queueUpdate = true;
+                this.queueUpdate = [true, isCpp];
             }
             else
             {
                 this.updateInProgress = true;
                 var self = this;
-                this.run(['-u']).then(() => {
+                const options = isCpp
+                    ? { env: { ...process.env, GTAGSFORCECPP: 'vscode_true' } }
+                    : undefined;
+                this.run(['-u'], options).then(() => {
                     self.updateTagsFinish();
                 }).catch(() => {
                     self.updateTagsFinish();
@@ -100,9 +103,9 @@ export class Global {
 
     updateTagsFinish() {
         this.updateInProgress = false;
-        if (this.queueUpdate) {
-                this.queueUpdate = false;
-                this.updateTags();
+        if (this.queueUpdate && this.queueUpdate[0]) {
+                this.queueUpdate[0] = false;
+                this.updateTags(this.queueUpdate[1]);
         }
     }
 
