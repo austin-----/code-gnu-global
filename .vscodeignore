@@ -1,9 +1,10 @@
 .vscode/**
-typings/**
+node_modules/@types/**
+node_modules/typsecript/**
+node_modules/.bin/**
 out/test/**
 test/**
 src/**
-**/*.map
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md

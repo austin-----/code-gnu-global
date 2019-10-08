@@ -50,12 +50,9 @@
     "compile": "tsc --watch -p ./"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.11",
     "@types/vscode": "^1.38.0",
-    "mocha": "^6.2.1",
-    "typescript": "^3",
-    "vscode-test": "^1.2.0"
+    "typescript": "^3"
   },
   "dependencies": {
     "child-process-promise": "^1.1.0",
