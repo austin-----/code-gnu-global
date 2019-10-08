@@ -1,4 +1,4 @@
-import { ExecFileOptionsWithOtherEncoding, ChildProcess } from 'child_process';
+import { ExecFileOptionsWithOtherEncoding, ChildProcess, execFileSync, ExecException } from 'child_process';
 var execFile = require("child-process-promise").execFile as ((
     command: string,
     args: ReadonlyArray<string> | null | undefined,
@@ -8,8 +8,8 @@ import * as iconv from 'iconv-lite';
 import * as vscode from 'vscode';
 
 interface ExecResult {
-    stdout: Buffer,
-    stderr: Buffer
+    stdout: string | Buffer,
+    stderr: string | Buffer
 }
 
 /**
@@ -33,23 +33,24 @@ function execute(
     var encoding = configuration.get<string>('encoding');
     var output = 'utf8';
     if (encoding != null && encoding != "") {
-        output = 'binary';
+        output = 'buffer';
     }
     return execFile(command, args, {
         ...options,
         cwd: vscode.workspace.rootPath,
         encoding: output,
         maxBuffer: 10*1024*1024
-    }).then(function(result): string | Buffer {
+    }).then(function(result): string {
         if (encoding != null && encoding != "") {
-            var decoded = iconv.decode(result.stdout, encoding);
+            var decoded = iconv.decode(result.stdout as Buffer, encoding);
             return decoded;
         }
-        return result.stdout;
-    }).catch(function(error: Error | null) {
-        console.error("Error: " + error); return '';
+        return result.stdout as string;
+    }).catch(function(e: ExecException | null) {
+        console.error(`${e}\n${e!.code && e!.code+''}`);
+        return '';
     }).progress(function() {
-        console.log("Command: " + command + " running...");
+        console.log("Command: " + [command].concat(args.map(s => `'${s}'`)).join(' ') + " running...");
     });
 };
 
@@ -64,6 +65,8 @@ export interface GlobalLine {
 export class Global {
     exec: string;
     cygbase?: string;
+    cygdrive?: string;
+    cygdriveexp?: RegExp;
 
     updateInProgress?: boolean;
     queueUpdate?: boolean;
@@ -120,7 +123,7 @@ export class Global {
 
             return { "tag": tag, "line": line, "path": path, "info": info, "kind": this.parseKind(info) };
         } catch (ex) {
-            console.error("Error: " + ex);
+            console.error(ex);
         }
         return null;
     }
@@ -134,13 +137,28 @@ export class Global {
      *
      */
     cygpath(path: string): string {
-        const drive = /(^?:\/cygpath)\/([a-z])\/(.+)/.exec(path)
+        const drive = this.cygdriveexp!.exec(path)
         if (drive) {
-            return `${drive[1]}:/${drive[2]}}`
+            return `${drive[1]}:/${drive[2]}`
         } else {
             // resolve relative to cygbase
             return `${this.cygpath}/${path}`
         }
+    }
+
+    /**
+     * On Windows and under Cygwin/MSYS, convert the input absolute path
+     * to the
+     */
+    pathcyg(path: string): string {
+        if (this.cygdrive === undefined)
+            return path;
+
+        let absolute;
+        if (absolute = /^([a-z]):[/\\](.*)/.exec(path))
+            return `${this.cygdrive}/${absolute[1]}/${absolute[2].replace(/\\/g, '/')}`
+        else
+            return `path.replace(/\\/g, '/')}`
     }
 
     private parseKind(info: string): vscode.SymbolKind {
@@ -159,7 +177,20 @@ export class Global {
     }
 
     constructor(exec: string, cygbase: string | undefined) {
+        console.log(exec, cygbase)
         this.exec = exec;
         this.cygbase = cygbase;
+        if (cygbase) {
+            try {
+                // FIXME: readlink keeps dying in vscode electron, but not under my node?
+                this.cygdrive = execFileSync(`${cygbase}\\usr\\bin\\readlink.exe`, ['/proc/cygwin'], { encoding: 'utf8' });
+                if (this.cygdrive == '/') this.cygdrive = '';
+                this.cygdriveexp = new RegExp(`^(?:/proc/cygdrive|${this.cygdrive})/([a-z])/(.*)`)
+            } catch (e) {
+                console.error(`${e}\n${e.stdout}\n${e.status}`);
+                this.cygdrive = '';     // XXX: Should not be here, but readlink keep dying
+                this.cygdriveexp = new RegExp(`^(?:/proc/cygdrive|/cygdrive|)/([a-z])/(.*)`)
+            }
+        }
     }
 }

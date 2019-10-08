@@ -4,7 +4,7 @@ import AbstractProvider from './abstractProvider';
 export default class GlobalDocumentSymbolProvider extends AbstractProvider implements vscode.DocumentSymbolProvider {	
 	public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): Thenable<vscode.SymbolInformation[]> {
 		var self = this;
-		return this._global.run(['--encode-path', ' ', '-f', document.fileName])
+		return this._global.run(['--encode-path', ' ', '-f', this._global.pathcyg(document.fileName)])
 		.then(function(output){
 			console.log(output);
 			var bucket = new Array<vscode.SymbolInformation>();

@@ -17,18 +17,19 @@ export function activate(context: vscode.ExtensionContext) {
 
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var executable = configuration.get<string>('executable', 'global');
-    var cygbase = undefined;
+    var cygbase;
     if (process.platform === 'win32') {
-        cygbase = configuration.get<string | undefined>('cygbase');
-        if (cygbase === undefined) {
-            var guess = executable.match(/(.*)[/\\]bin[/\\]global(?:.exe)?$/i)
-            cygbase = guess ? guess[0] : undefined
+        cygbase = configuration.get<string | undefined | null>('cygbase');
+        if (cygbase == undefined) {
+            var guess = executable.match(/^(.*?)(?:[/\\]usr)?[/\\]bin[/\\]global(?:.exe)?$/i)
+            cygbase = guess ? guess[1] : undefined
         }
     }
     const global = new Global(executable, cygbase);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['cpp', 'c'], new CompletionItemProvider(global), '.', '>'));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(['cpp', 'c'], new DefinitionProvider(global)));
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(['cpp', 'c'], new DocumentSymbolProvider(global)));
-    context.subscriptions.push(vscode.languages.registerReferenceProvider(['cpp', 'c'], new ReferenceProvider(global)));
+    const filter = [ { scheme: 'file', language: 'c' }, { scheme: 'file', language: 'cpp' } ];
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(filter, new CompletionItemProvider(global), '.', '>'));
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(filter, new DefinitionProvider(global)));
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(filter, new DocumentSymbolProvider(global)));
+    context.subscriptions.push(vscode.languages.registerReferenceProvider(filter, new ReferenceProvider(global)));
     context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(d => global.updateTags()));
 }
