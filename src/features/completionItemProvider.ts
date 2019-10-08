@@ -20,7 +20,7 @@ export default class GlobalCompletionItemProvider extends AbstractProvider imple
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
         var self = this;
-		return this._global.run(['-x', '"^' + word + '.*"'])
+		return this._global.run(['-x', `${word}.*`])
 		.then(function(output){
 			console.log(output);
 			var bucket = new Array<vscode.CompletionItem>();

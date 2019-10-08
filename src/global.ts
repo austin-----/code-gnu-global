@@ -1,6 +1,9 @@
-import { ExecOptions, ChildProcess } from 'child_process';
-var exec = require('child-process-promise').exec as
-    ((command: string, options: { encoding: string } & ExecOptions) => ChildProcessPromise<ExecResult>);
+import { ExecFileOptionsWithOtherEncoding, ChildProcess } from 'child_process';
+var execFile = require("child-process-promise").execFile as ((
+    command: string,
+    args: ReadonlyArray<string> | null | undefined,
+    options: ExecFileOptionsWithOtherEncoding
+) => ChildProcessPromise<ExecResult>);
 import * as iconv from 'iconv-lite';
 import * as vscode from 'vscode';
 
@@ -21,14 +24,19 @@ interface ChildProcessPromise<T> extends Promise<T> {
     progress: (arg0: (arg0: ChildProcess) => any) => ChildProcessPromise<T>
 }
 
-function execute(command: string): Promise<string | Buffer> {
+function execute(
+    command: string,
+    args: string[],
+    options?: ExecFileOptionsWithOtherEncoding
+): Promise<string | Buffer> {
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var encoding = configuration.get<string>('encoding');
     var output = 'utf8';
     if (encoding != null && encoding != "") {
         output = 'binary';
     }
-    return exec(command, {
+    return execFile(command, args, {
+        ...options,
         cwd: vscode.workspace.rootPath,
         encoding: output,
         maxBuffer: 10*1024*1024
@@ -60,7 +68,9 @@ export class Global {
     queueUpdate?: boolean;
 
     run(params: string[]): Promise<string | Buffer> {
-        return execute(this.exec + ' ' + params.join(' '));
+        // FIXME: On Win32 Cygwin/MSYS, uv's escape is not entirely correct
+        // as they use a cmdline parsing (build_argv) different from MS CRT
+        return execute(this.exec, params);
     }
 
     updateTags() {
