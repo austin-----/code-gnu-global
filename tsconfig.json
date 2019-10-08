@@ -3,6 +3,7 @@
 		"module": "commonjs",
 		"target": "es2016",
 		"outDir": "out",
+		"strict": true,
 		"sourceMap": true
 	},
 	"exclude": [

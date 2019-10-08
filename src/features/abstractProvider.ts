@@ -13,7 +13,7 @@ export default class AbstractProvider {
 
 	dispose() {
 		while (this._disposables.length) {
-			this._disposables.pop().dispose();
+			this._disposables.pop()!.dispose();
 		}
 	}
 }

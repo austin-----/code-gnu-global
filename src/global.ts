@@ -1,8 +1,27 @@
-var exec = require('child-process-promise').exec;
-var iconv = require('iconv-lite');
+import { ExecOptions, ChildProcess } from 'child_process';
+var exec = require('child-process-promise').exec as
+    ((command: string, options: { encoding: string } & ExecOptions) => ChildProcessPromise<ExecResult>);
+import * as iconv from 'iconv-lite';
 import * as vscode from 'vscode';
 
-function execute(command: string): Promise<Buffer> {
+interface ExecResult {
+    stdout: Buffer,
+    stderr: Buffer
+}
+
+/**
+ * Interface derived from lib.es5.d.ts
+ *
+ * Copyright (c) Microsoft Foundation under Apache License 2.0.
+ */
+interface ChildProcessPromise<T> extends Promise<T> {
+    childProcess: ChildProcess
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): ChildProcessPromise<TResult1 | TResult2>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): ChildProcessPromise<T | TResult>;
+    progress: (arg0: (arg0: ChildProcess) => any) => ChildProcessPromise<T>
+}
+
+function execute(command: string): Promise<string | Buffer> {
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var encoding = configuration.get<string>('encoding');
     var output = 'utf8';
@@ -13,26 +32,34 @@ function execute(command: string): Promise<Buffer> {
         cwd: vscode.workspace.rootPath,
         encoding: output,
         maxBuffer: 10*1024*1024
-    }).then(function(result): Buffer {
+    }).then(function(result): string | Buffer {
         if (encoding != null && encoding != "") {
             var decoded = iconv.decode(result.stdout, encoding);
             return decoded;
         }
         return result.stdout;
-    }).fail(function(error) {
-        console.error("Error: " + error);
-    }).progress(function(childProcess) {
+    }).catch(function(error: Error | null) {
+        console.error("Error: " + error); return '';
+    }).progress(function() {
         console.log("Command: " + command + " running...");
     });
 };
 
+export interface GlobalLine {
+    tag: string,
+    line: number,
+    path: string,
+    info: string,
+    kind: vscode.SymbolKind
+}
+
 export class Global {
     exec: string;
 
-    updateInProgress: boolean;
-    queueUpdate: boolean;
+    updateInProgress?: boolean;
+    queueUpdate?: boolean;
 
-    run(params: string[]): Promise<Buffer> {
+    run(params: string[]): Promise<string | Buffer> {
         return execute(this.exec + ' ' + params.join(' '));
     }
 
@@ -65,14 +92,14 @@ export class Global {
         }
     }
 
-    parseLine(content: string): any {
+    parseLine(content: string): GlobalLine | null {
         try {
             if (content == null || content == "") return null;
 
             var values = content.split(/ +/);
-            var tag = values.shift();
-            var line = parseInt(values.shift()) - 1;
-            var path = values.shift().replace("%20", " ");
+            var tag = values.shift()!;
+            var line = parseInt(values.shift()!) - 1;
+            var path = values.shift()!.replace("%20", " ");
             var info = values.join(' ');
 
             return { "tag": tag, "line": line, "path": path, "info": info, "kind": this.parseKind(info) };
