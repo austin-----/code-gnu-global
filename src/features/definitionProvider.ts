@@ -16,7 +16,7 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 					output.toString().split(/\r?\n/)
 					.forEach(function(value, index, array){
 						var result = self._global.parseLine(value);
-						if (result == null)return;
+						if (result == null) return null;
 						
 						result.label = result.path;
 						result.description = result.info;
@@ -40,8 +40,8 @@ export default class GlobalDefinitionProvider extends AbstractProvider implement
 			catch (ex){
 				console.error("Error: " + ex);
 			}
-			
+
 			return null;
-		});
+		}, () => null);
 	}
 }
