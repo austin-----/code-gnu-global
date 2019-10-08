@@ -63,6 +63,7 @@ export interface GlobalLine {
 
 export class Global {
     exec: string;
+    cygbase?: string;
 
     updateInProgress?: boolean;
     queueUpdate?: boolean;
@@ -112,11 +113,34 @@ export class Global {
             var path = values.shift()!.replace("%20", " ");
             var info = values.join(' ');
 
+            // Allow surpression by ''
+            if (this.cygbase && path.startsWith('/')) {
+                path = this.cygpath(path);
+            }
+
             return { "tag": tag, "line": line, "path": path, "info": info, "kind": this.parseKind(info) };
         } catch (ex) {
             console.error("Error: " + ex);
         }
         return null;
+    }
+
+    /** Convert Cygwin/MSYS paths to absolute Windows paths
+     *  (any slash direction)
+     *
+     * Cygwin X:\\...: /cygdrive/x/...
+     * MSYS2  X:\\...: /x/...
+     * Other: cygbase + path
+     *
+     */
+    cygpath(path: string): string {
+        const drive = /(^?:\/cygpath)\/([a-z])\/(.+)/.exec(path)
+        if (drive) {
+            return `${drive[1]}:/${drive[2]}}`
+        } else {
+            // resolve relative to cygbase
+            return `${this.cygpath}/${path}`
+        }
     }
 
     private parseKind(info: string): vscode.SymbolKind {
@@ -134,7 +158,8 @@ export class Global {
         return kind;
     }
 
-    constructor(exec: string) {
+    constructor(exec: string, cygbase: string | undefined) {
         this.exec = exec;
+        this.cygbase = cygbase;
     }
 }

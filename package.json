@@ -31,6 +31,11 @@
           "default": "global",
           "description": "Specify the path to the global executable. (If it is not in PATH already)"
         },
+        "codegnuglobal.cygbase": {
+          "type": "string",
+          "default": null,
+          "description": "(Windows-only) Specify the base-path of the Cygwin/MSYS instance of Global for path resolution. Defaults to parent directory of global's 'bin' if there is one. Use \"\" to force disable."
+        },
         "codegnuglobal.autoupdate": {
           "type": "boolean",
           "default": true,

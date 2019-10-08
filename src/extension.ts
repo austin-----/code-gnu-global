@@ -17,7 +17,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var executable = configuration.get<string>('executable', 'global');
-    const global = new Global(executable);
+    var cygbase = undefined;
+    if (process.platform === 'win32') {
+        cygbase = configuration.get<string | undefined>('cygbase');
+        if (cygbase === undefined) {
+            var guess = executable.match(/(.*)[/\\]bin[/\\]global(?:.exe)?$/i)
+            cygbase = guess ? guess[0] : undefined
+        }
+    }
+    const global = new Global(executable, cygbase);
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['cpp', 'c'], new CompletionItemProvider(global), '.', '>'));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(['cpp', 'c'], new DefinitionProvider(global)));
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(['cpp', 'c'], new DocumentSymbolProvider(global)));
