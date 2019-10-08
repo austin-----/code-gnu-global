@@ -113,13 +113,8 @@ export class Global {
             var values = content.split(/ +/);
             var tag = values.shift()!;
             var line = parseInt(values.shift()!) - 1;
-            var path = values.shift()!.replace("%20", " ");
+            var path = this.cygpath(values.shift()!.replace("%20", " "));
             var info = values.join(' ');
-
-            // Allow surpression by ''
-            if (this.cygbase && path.startsWith('/')) {
-                path = this.cygpath(path);
-            }
 
             return { "tag": tag, "line": line, "path": path, "info": info, "kind": this.parseKind(info) };
         } catch (ex) {
@@ -137,6 +132,10 @@ export class Global {
      *
      */
     cygpath(path: string): string {
+        // Allow surpression by ''
+        if (!(this.cygbase && path.startsWith('/')))
+            return path;
+
         const drive = this.cygdriveexp!.exec(path)
         if (drive) {
             return `${drive[1]}:/${drive[2]}`
@@ -182,13 +181,13 @@ export class Global {
         this.cygbase = cygbase;
         if (cygbase) {
             try {
-                // FIXME: readlink keeps dying in vscode electron, but not under my node?
-                this.cygdrive = execFileSync(`${cygbase}\\usr\\bin\\readlink.exe`, ['/proc/cygwin'], { encoding: 'utf8' });
+                // readlink /proc/cygdrive keeps dying, but this one looks strong...
+                this.cygdrive = execFileSync(`${cygbase}\\usr\\bin\\cygpath.exe`, ['-u', 'c:\\'], { encoding: 'utf8' }).replace(/\/c\/\n$/, "");
                 if (this.cygdrive == '/') this.cygdrive = '';
                 this.cygdriveexp = new RegExp(`^(?:/proc/cygdrive|${this.cygdrive})/([a-z])/(.*)`)
             } catch (e) {
                 console.error(`${e}\n${e.stdout}\n${e.status}`);
-                this.cygdrive = '';     // XXX: Should not be here, but readlink keep dying
+                this.cygdrive = '';
                 this.cygdriveexp = new RegExp(`^(?:/proc/cygdrive|/cygdrive|)/([a-z])/(.*)`)
             }
         }
