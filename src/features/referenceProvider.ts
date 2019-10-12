@@ -6,7 +6,7 @@ export default class GlobalReferenceProvider extends AbstractProvider implements
 		console.log(position);
 		var word = document.getText(document.getWordRangeAtPosition(position)).split(/\r?\n/)[0];
 		var self = this;
-		return this._global.run(['--encode-path', '" "', '-rax', word])
+		return this._global.run(['--encode-path', ' ', '-rax', word], this._options)
 			.then(function(output) {
 				console.log(output);
 				var bucket = new Array<vscode.Location>();

@@ -31,6 +31,11 @@
           "default": "global",
           "description": "Specify the path to the global executable. (If it is not in PATH already)"
         },
+        "codegnuglobal.cygbase": {
+          "type": "string",
+          "default": null,
+          "description": "(Windows-only) Specify the base-path of the Cygwin/MSYS instance of Global for path resolution. Defaults to parent directory of global's 'bin' if there is one. Use \"\" to force disable."
+        },
         "codegnuglobal.autoupdate": {
           "type": "boolean",
           "default": true,
@@ -41,16 +46,17 @@
   },
   "main": "./out/src/extension",
   "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc --watch -p ./"
   },
   "devDependencies": {
-    "typescript": "^1.6.2",
-    "vscode": "0.10.x"
+    "@types/node": "^12.7.11",
+    "@types/vscode": "^1.38.0",
+    "typescript": "^3"
   },
   "dependencies": {
     "child-process-promise": "^1.1.0",
-    "iconv-lite": "^0.4.13"
+    "iconv-lite": "^0.5"
   },
   "repository": {
     "type": "git",

@@ -30,7 +30,7 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
    E.g.: (CP936 for Simplified Chinese on Windows)
    ```JSON
    {
-       "codegnuglobal.encoding": 'cp936'
+       "codegnuglobal.encoding": "cp936"
    }
    ```
 
@@ -52,7 +52,7 @@ Provide Intellisense for C/C++ with the help of the GNU Global tool in Visual St
 ![List symbols](screenshots/list_symbols.png)
 
 ## Limitations
-Since GNU Global is a tagging system, it does not do any AST parsing to understand class members and etc. 
+Since GNU Global is a tagging system, it does not do any AST parsing to understand class members and etc.
 
 ### For more information
 * [GNU Global](https://www.gnu.org/software/global/)

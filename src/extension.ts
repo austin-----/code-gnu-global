@@ -17,10 +17,35 @@ export function activate(context: vscode.ExtensionContext) {
 
     var configuration = vscode.workspace.getConfiguration('codegnuglobal');
     var executable = configuration.get<string>('executable', 'global');
-    const global = new Global(executable);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(['cpp', 'c'], new CompletionItemProvider(global), '.', '>'));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(['cpp', 'c'], new DefinitionProvider(global)));
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(['cpp', 'c'], new DocumentSymbolProvider(global)));
-    context.subscriptions.push(vscode.languages.registerReferenceProvider(['cpp', 'c'], new ReferenceProvider(global)));
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(d => global.updateTags()));
+    var cygbase;
+    if (process.platform === 'win32') {
+        cygbase = configuration.get<string | undefined | null>('cygbase');
+        if (cygbase == undefined) {
+            var guess = executable.match(/^(.*?)(?:[/\\]usr)?[/\\]bin[/\\]global(?:.exe)?$/i)
+            cygbase = guess ? guess[1] : undefined
+        }
+    }
+    const global = new Global(executable, cygbase);
+
+    function registerLanguages(language: string[], isCpp = false) {
+        if (!isCpp) {
+            const hasCpp = language.indexOf('cpp')
+            if (hasCpp >= 0) {
+                language.splice(hasCpp);
+                registerLanguages(['cpp'], true);
+            }
+        }
+        const filter = language.map((language) => { return { scheme: 'file', language }})
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(filter, new CompletionItemProvider(global, isCpp), '.', '>'));
+        context.subscriptions.push(vscode.languages.registerDefinitionProvider(filter, new DefinitionProvider(global, isCpp)));
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(filter, new DocumentSymbolProvider(global, isCpp)));
+        context.subscriptions.push(vscode.languages.registerReferenceProvider(filter, new ReferenceProvider(global, isCpp)));
+        return;
+    }
+
+    // Global supports more than this, but let's be chill for now: 'c,yacc,asm,java,cpp,php'
+    // In the future we can make a new config option and do [...new Set(configuration.get('langs').split(','))]
+    registerLanguages(['c', 'cpp']);
+
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(d => global.updateTags(d.languageId === 'cpp')));
 }
